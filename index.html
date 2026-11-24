@@ -3,10 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>History Game</title>
+    <title>History of Everything (i guess)</title>
+    <meta name="description" content="A chaotic, AI-powered slide-book generator that summarizes the entire timeline of existence in neon-soaked, humorous slides." />
+    <meta property="og:title" content="History of Everything (i guess)" />
+    <meta property="og:description" content="A chaotic, AI-powered slide-book generator that summarizes the entire timeline of existence in neon-soaked, humorous slides." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
       body {
         background-color: #000;
         color: #fff;
@@ -22,21 +33,9 @@
         scrollbar-width: none;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.25",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/"
-  }
-}
-</script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

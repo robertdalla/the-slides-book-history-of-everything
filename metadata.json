@@ -1,5 +1,8 @@
 {
-  "name": "The Slides book : History of Everything",
-  "description": "A hilarious, swipeable cartoon journey through history, inspired by fast-paced educational videos.",
-  "requestFramePermissions": []
+  "name": "History of Everything (i guess)",
+  "description": "A chaotic, AI-powered slide-book generator that summarizes the entire timeline of existence in neon-soaked, humorous slides.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

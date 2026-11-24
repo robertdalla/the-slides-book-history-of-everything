@@ -90,26 +90,51 @@ export default function App() {
       setCurrentIndex(0);
     } catch (error) {
       console.error("Game gen failed", error);
-      setLoadingStatus("Failed to load history. Try again.");
-      setTimeout(() => setGameState(GameState.HOME), 2000);
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Failed to load history. Try again.";
+      setLoadingStatus(message);
+      setTimeout(() => setGameState(GameState.HOME), 3000);
     }
   };
 
+  const goToNextSlide = () => {
+    playSwipeSound();
+    if (currentIndex < slides.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      setGameState(GameState.CONCLUSION);
+    }
+  };
+
+  const goToPrevSlide = () => {
+    if (currentIndex > 0) {
+      playSwipeSound();
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  useEffect(() => {
+    if (gameState !== GameState.PLAYING) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        goToNextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        goToPrevSlide();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [gameState, currentIndex, slides.length, soundEnabled]);
+
   const handleDragEnd = (event: any, info: PanInfo) => {
-    if (info.offset.x < -SWIPE_THRESHOLD) {
+    if (info.offset.x < -SWIPE_THRESHOLD || info.velocity.x < -500) {
       // Swipe Left (Next)
-      playSwipeSound();
-      if (currentIndex < slides.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-      } else {
-        setGameState(GameState.CONCLUSION);
-      }
-    } else if (info.offset.x > SWIPE_THRESHOLD) {
+      goToNextSlide();
+    } else if (info.offset.x > SWIPE_THRESHOLD || info.velocity.x > 500) {
       // Swipe Right (Prev)
-      playSwipeSound();
-      if (currentIndex > 0) {
-        setCurrentIndex(prev => prev - 1);
-      }
+      goToPrevSlide();
     }
   };
 
@@ -132,7 +157,7 @@ export default function App() {
 
   if (gameState === GameState.HOME) {
     return (
-      <div className="h-full w-full bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      <div className="h-[100dvh] w-full bg-black flex flex-col items-center justify-center p-6 relative overflow-hidden">
         {/* Background Decorative Elements */}
         <div className="absolute top-10 left-10 w-20 h-20 border-4 border-[#ffff00] rounded-full animate-bounce opacity-50" />
         <div className="absolute bottom-20 right-10 w-32 h-32 border-4 border-[#ff00ff] rotate-45 animate-pulse opacity-50" />
@@ -169,7 +194,7 @@ export default function App() {
 
   if (gameState === GameState.CONCLUSION) {
      return (
-      <div className="h-full w-full bg-[#ff00ff] flex flex-col items-center justify-center p-6 relative text-black">
+      <div className="h-[100dvh] w-full bg-[#ff00ff] flex flex-col items-center justify-center p-6 relative text-black">
         <h2 className="text-4xl font-black font-mono text-center mb-8 text-white drop-shadow-[4px_4px_0_rgba(0,0,0,1)]">
           THE END
         </h2>
@@ -203,9 +228,9 @@ export default function App() {
 
   // PLAYING STATE
   return (
-    <div className="h-full w-full bg-black relative overflow-hidden flex flex-col">
+    <div className="h-[100dvh] w-full bg-black relative overflow-hidden flex flex-col">
        {/* Header */}
-       <div className="h-16 flex items-center justify-between px-6 z-20 bg-black/50 backdrop-blur-sm border-b border-white/10">
+       <div className="h-16 shrink-0 flex items-center justify-between px-6 z-20 bg-black/50 backdrop-blur-sm border-b border-white/10">
           <span className="font-mono text-[#00ff00] text-sm truncate max-w-[200px]">{gameTitle}</span>
           <div className="flex gap-1">
              {slides.map((_, i) => (
@@ -218,7 +243,7 @@ export default function App() {
        </div>
 
        {/* Slides Area */}
-       <div className="flex-1 relative w-full flex items-center justify-center overflow-hidden">
+       <div className="flex-1 min-h-0 relative w-full flex items-center justify-center overflow-hidden">
          <AnimatePresence initial={false} custom={currentIndex}>
            <motion.div
              key={currentIndex}
@@ -231,7 +256,7 @@ export default function App() {
              dragConstraints={{ left: 0, right: 0 }}
              dragElastic={1}
              onDragEnd={handleDragEnd}
-             className="absolute w-full h-full flex items-center justify-center p-4 max-w-md mx-auto"
+             className="absolute inset-0 w-full h-full flex items-center justify-center p-4 max-w-md mx-auto cursor-grab active:cursor-grabbing select-none"
            >
               {slides[currentIndex] && (
                 <Card 
@@ -245,7 +270,7 @@ export default function App() {
        </div>
 
        {/* Safe Area Bottom Spacer for mobile home bars */}
-       <div className="h-8 w-full bg-black/50" />
+       <div className="h-8 shrink-0 w-full bg-black/50" />
     </div>
   );
 }
